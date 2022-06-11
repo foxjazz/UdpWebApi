@@ -3,6 +3,8 @@ using System.Net.Sockets;
 using System.Text;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
+using UdpWebApi.Models;
+using UdpWebApi.Registrations;
 
 
 namespace UdpWebApi;
@@ -11,12 +13,24 @@ namespace UdpWebApi;
 public class UdpController : ControllerBase
 {
 
+   public class msg
+    {
+        public string message { get; set; }
+    }
+    private IManager manager;
+    public UdpController(IManager __manager)
+    {
+        manager = __manager;
+    }
     // GET
     private IPEndPoint _endPoint;
-    [HttpGet("Function2")]
-    public string Function2()
+    [HttpGet("Test")]
+    public msg Function2()
     {
-        return "function 2";
+        var m = new msg();
+        string date = DateTime.Now.ToString("mm:ss");
+        m.message = "from server" + date;
+        return m;
     }
     [HttpGet("IsAlive")]
     public string IsAlive()
@@ -24,6 +38,7 @@ public class UdpController : ControllerBase
         return "alive";
     }
 
+    
     [HttpGet("IP")]
     public string IP()
     {
@@ -68,6 +83,28 @@ public class UdpController : ControllerBase
             return len.ToString();
         }
     }
-    
+
+    [HttpGet("Search")]
+    public Register search(string email)
+    {
+        return manager.search(email);
+    }
+
+    [HttpPost("register")]
+    public msg register([FromBody] Register reg)
+    { var m = new msg();
+        try
+        {
+            manager.add(reg);
+           
+            m.message = "success";
+            return m;
+        }
+        catch (Exception ex)
+        {
+            m.message = ex.Message;
+            return m;
+        }
+    }
     
 }
