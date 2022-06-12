@@ -18,7 +18,8 @@ builder.Services.AddCors(options =>
         });
 });
 builder.Services.AddSwaggerGen();
-builder.Services.AddSignalR();
+//builder.Services.AddSignalR();
+builder.Services.AddSingleton<UdpListener>(new UdpListener());
 builder.Services.AddScoped<IManager, Manager>();
     
 var app = builder.Build();
