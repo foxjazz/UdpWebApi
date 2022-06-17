@@ -26,6 +26,19 @@ public class Manager : IManager
                }
           }
      }
+
+     public Register getLocal()
+     {
+          var k = registers.Keys.First();
+          Register valu;
+          if (registers.TryGetValue(k, out valu) == true)
+          {
+               return valu;
+          };
+          valu = new Register();
+          valu.status = "Not Found";
+          return valu;
+     }
      public bool add(Register reg)
      {
           var result =  registers.TryAdd(reg.email, reg);
@@ -52,6 +65,10 @@ public class Manager : IManager
           valu.status = "Not Found";
           return valu;
      }
+    public List<Register> list()
+    {
+        return registers.Values.ToList();
+    }
      
 
 }

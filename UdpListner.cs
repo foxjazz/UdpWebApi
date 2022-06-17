@@ -1,13 +1,21 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using Newtonsoft.Json;
+using UdpWebApi.Models;
 
 namespace UdpWebApi;
 
 public sealed class UdpListener
 {
+    public string severType;
+    public string centerHost;
+    public string localHost;
+    public string serverType;
     private UdpClient client;
     private IPEndPoint sender;
+    public string localIP;
+    public string remoteHost;
     public static UdpController.UpdateInfoTxtDelegate UpdateInfoTxt;
     // public int port; // TODO add more dynamic capability for changing listener port. 
     bool stop;
@@ -62,9 +70,11 @@ public sealed class UdpListener
         {
             data = client.Receive(ref sender);
             stringData = Encoding.ASCII.GetString(data, 0, data.Length);
+            
             /*client.Close();
             stop = true;*/
-            UpdateInfoTxt(stringData);
+            var fm = JsonConvert.DeserializeObject<UdpFormat>(stringData);
+            UpdateInfoTxt(fm);
         }
             
     }
